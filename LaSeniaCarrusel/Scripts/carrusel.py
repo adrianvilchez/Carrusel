@@ -3,8 +3,9 @@
 # Importamos las librerias.
 
 import gi
-import shutil, os
+import shutil, os, sys
 gi.require_version('Gtk', '3.0')
+gi.require_version('Vte', '2.91')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio, Vte
 import subprocess
 
@@ -54,6 +55,9 @@ class Carrusel(Gtk.Window):
 
 		# Accedemos al objeto "Window" mediante el identifivador declarado en el XML de "Glade".
 		self.window = self.builder.get_object("carrusel_window")
+
+		# Accedemos al objeto "paginas_carrusel mediante el identifivador declarado en el XML de "Glade".
+		self.paginas_carrusel = self.builder.get_object("paginas_carrusel")
 
 		# Enlaces
 		# Accedemos al objeto "TextView" mediante el identifivador declarado en el XML de "Glade".
@@ -165,9 +169,27 @@ class Carrusel(Gtk.Window):
 		self.model_photos = self.icon_view_photos.get_model()
 		
 		# Creamos la visiluacización de los eventos de la ventana.
-		self.terminal = Vte.Terminal()
-		self.window.add(self.terminal)
 		
+		self.sw_viewport = self.builder.get_object("desplazamiento_viewport")
+		self.viewport = self.builder.get_object("viewport")
+		
+		
+		# Creamos la terminal
+		self.terminal = Vte.Terminal()
+		self.terminal.spawn_sync(
+			Vte.PtyFlags.DEFAULT,
+			os.environ['HOME'],
+			["/bin/sh"],
+			[],
+			GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+			None,
+			None,
+			)
+
+		self.command = "bash /usr/bin/senia-carrusel\n"
+		self.viewport.add(self.terminal)
+		
+		self.sw_viewport.add(self.viewport)
 		self.window.show_all()
 			
 	################################### on_del_button_docs_clicked #########################
@@ -434,11 +456,11 @@ class Carrusel(Gtk.Window):
 	# Fin Fotos ###########################################################################
 
 	def on_generate_button_clicked(self, widget):
-		#subprocess.call(['./usr/bin/senia-carrusel'])
-		#commands.getoutput("bash /usr/bin/senia-carrusel")
-		#sys.command("/usr/bin/gnome-terminal.real -e bash /usr/bin/senia-carrusel")
-		generar = "bash /usr/bin/senia-carrusel"
-		subprocess.call(generar, shell=True)
+		#generar = "bash /usr/bin/senia-carrusel"
+		#subprocess.call(generar, shell=True)
+		length = len(self.command)
+		self.terminal.feed_child(self.command, length)
+		self.paginas_carrusel.next_page()
 
 	############################# drag_and_drop_docs ###################################
 
@@ -457,13 +479,6 @@ class Carrusel(Gtk.Window):
 				shutil.copyfile(origen, destino)
 				self.fill_store_docs()
 
-
-			'''elif info == TARGET_ENTRY_PIXBUF:
-				pixbuf = data.get_pixbuf()
-				width = pixbuf.get_width()
-				height = pixbuf.get_height()
-
-				print("Received pixbuf with width %spx and height %spx" % (width, height))'''
 		except:
 			mensaje = 'zenity --error --title="ERROR" --text="El archivo contiene tildes o espacios."'
 			subprocess.call(mensaje, shell=True)
@@ -484,13 +499,6 @@ class Carrusel(Gtk.Window):
 				shutil.copyfile(origen, destino)
 				self.fill_store_pdfs()
 
-
-			'''elif info == TARGET_ENTRY_PIXBUF:
-				pixbuf = data.get_pixbuf()
-				width = pixbuf.get_width()
-				height = pixbuf.get_height()
-
-				print("Received pixbuf with width %spx and height %spx" % (width, height))'''
 		except:
 			mensaje = 'zenity --error --title="ERROR" --text="El archivo contiene tildes o espacios."'
 			subprocess.call(mensaje, shell=True)
@@ -511,13 +519,6 @@ class Carrusel(Gtk.Window):
 				shutil.copyfile(origen, destino)
 				self.fill_store_photos()
 
-
-			'''elif info == TARGET_ENTRY_PIXBUF:
-				pixbuf = data.get_pixbuf()
-				width = pixbuf.get_width()
-				height = pixbuf.get_height()
-
-				print("Received pixbuf with width %spx and height %spx" % (width, height))'''
 		except:
 			mensaje = 'zenity --error --title="ERROR" --text="El archivo contiene tildes o espacios."'
 			subprocess.call(mensaje, shell=True)
