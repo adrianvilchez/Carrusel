@@ -8,7 +8,7 @@
     <property name="resizable">False</property>
     <property name="default_width">1200</property>
     <property name="default_height">800</property>
-    <property name="icon">/home/mrpatxi/Github/Carrusel/LaSeniaCarrusel/Images/carousel.png</property>
+    <property name="icon">carousel.png</property>
     <signal name="destroy" handler="on_carrusel_window_destroy" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
