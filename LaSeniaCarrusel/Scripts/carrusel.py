@@ -3,7 +3,7 @@
 # Importamos las librerias.
 
 import gi
-import shutil, os, sys
+import shutil, os
 gi.require_version('Gtk', '3.0')
 gi.require_version('Vte', '2.91')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio, Vte
@@ -229,7 +229,6 @@ class Carrusel(Gtk.Window):
 
 	def on_del_button_docs_clicked(self, data):
 		try:
-			#print(str(self.icon_view_docs.get_cursor()[0]))
 			self.icon_view_docs.item_activated(self.icon_view_docs.get_cursor()[1])
 			if self.path:
 				filepath_docs = self.cur_dir_docs + os.path.sep + self.path
@@ -273,9 +272,6 @@ class Carrusel(Gtk.Window):
 		if not isDir:
 			self.path = path
 			return
-
-		#self.cur_dir_docs = self.cur_dir_docs + os.path.sep + path
-		#self.fill_store_docs()
 
 	def add_text_targets_docs(self, button=None):
 		self.label_dnd_docs.drag_dest_set_target_list(None)
@@ -366,8 +362,6 @@ class Carrusel(Gtk.Window):
 			self.path = path
 			return
 
-		#self.cur_dir_pdfs = self.cur_dir_pdfs + os.path.sep + path
-		#self.fill_store_pdfs()
 	# Fin PDF's ###########################################################################
 
 	# Inicio Fotos ###########################################################################
@@ -450,14 +444,9 @@ class Carrusel(Gtk.Window):
 			self.path = path
 			return
 
-		#self.cur_dir_photos = self.cur_dir_photos + os.path.sep + path
-		#self.fill_store_photos()
-
 	# Fin Fotos ###########################################################################
 
 	def on_generate_button_clicked(self, widget):
-		#generar = "bash /usr/bin/senia-carrusel"
-		#subprocess.call(generar, shell=True)
 		length = len(self.command)
 		self.terminal.feed_child(self.command, length)
 		self.paginas_carrusel.next_page()
