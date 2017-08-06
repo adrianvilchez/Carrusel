@@ -7,8 +7,6 @@ import shutil, os
 gi.require_version('Gtk', '3.0')
 gi.require_version('Vte', '2.91')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio, Vte
-import subprocess
-
 
 COL_PATH = 0
 COL_PIXBUF = 1
@@ -469,8 +467,9 @@ class Carrusel(Gtk.Window):
 				self.fill_store_docs()
 
 		except:
-			mensaje = 'zenity --error --title="ERROR" --text="El archivo contiene tildes o espacios."'
-			subprocess.call(mensaje, shell=True)
+			error = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, 'El archivo contiene tildes o espacios.')
+			error.run()
+			error.destroy()
 			pass
 
 	def on_label_dnd_pdfs_drag_data_received(self, label_dnd_pdfs, drag_context, x,y, data,info, time):
@@ -489,8 +488,9 @@ class Carrusel(Gtk.Window):
 				self.fill_store_pdfs()
 
 		except:
-			mensaje = 'zenity --error --title="ERROR" --text="El archivo contiene tildes o espacios."'
-			subprocess.call(mensaje, shell=True)
+			error = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, 'El archivo contiene tildes o espacios.')
+			error.run()
+			error.destroy()
 			pass
 
 	def on_label_dnd_photos_drag_data_received(self, label_dnd_photos, drag_context, x,y, data,info, time):
@@ -509,8 +509,9 @@ class Carrusel(Gtk.Window):
 				self.fill_store_photos()
 
 		except:
-			mensaje = 'zenity --error --title="ERROR" --text="El archivo contiene tildes o espacios."'
-			subprocess.call(mensaje, shell=True)
+			error = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, 'El archivo contiene tildes o espacios.')
+			error.run()
+			error.destroy()
 			pass
 
 def main():
